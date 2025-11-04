@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { QuestionRequestValidator } from '../validators/QuestionRequestValidator';
 import { AskToAIUseCase } from 'src/application/usecases/AskToAIUseCase';
-import { Message } from "src/domain/valueobjects/Message";
+import { Message } from "src/domain/valueobjects/ai/Message";
 import { AIInput } from "src/domain/dto/AIInput";
 import { Token } from "src/domain/valueobjects/ai/Token";
+import { GeminiAgent } from "src/infrastructure/external/AIAgents/GeminiAgent";
 
 export class QuestionController {
     private validator: QuestionRequestValidator;
@@ -11,7 +12,7 @@ export class QuestionController {
 
     constructor() {
         this.validator = new QuestionRequestValidator;
-        this.useCase = new AskToAIUseCase;
+        this.useCase = new AskToAIUseCase(new GeminiAgent);
     }
 
     async handle(req: Request, res: Response): Promise<any> {
@@ -24,9 +25,9 @@ export class QuestionController {
                 response: `Mensagem: ${outputDto.getResponse().getValue()}`
             });
         } catch (e) {
-            return res.status(e.status).json({
+            return res.status(e.status || 500).json({
                 success: false,
-                response: `error: ${e.message}`
+                response: `error: ${e.message || 'error'}`
             });
         }
     }

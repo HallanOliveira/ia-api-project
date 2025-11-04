@@ -1,4 +1,4 @@
-import { DomainException } from "../exceptions/DomainException";
+import { DomainException } from "../../exceptions/DomainException";
 
 export class Message {
     private value: string;

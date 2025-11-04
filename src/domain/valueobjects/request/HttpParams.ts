@@ -1,4 +1,4 @@
-export class HttpHeader {
+export class HttpParams {
     private value: object;
 
     constructor(value: object) {

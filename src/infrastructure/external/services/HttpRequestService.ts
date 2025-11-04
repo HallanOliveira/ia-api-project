@@ -7,16 +7,20 @@ export class HttpRequestService {
 
     constructor(request: RequestInterface) {
         this.request = request;
-        this.httpProvider = axios;
+        this.httpProvider = axios.create({
+            baseURL: this.request.getEndpoint().getValue(),
+            timeout: this.request.getTimeout().getValue(),
+            headers: this.request.getHeader.getValue()
+        });
     }
 
     get() {
-    try {
-        const response = await this.httpProvider.get(request.url);
-        console.log(response.data);
-    } catch (error) {
-        console.error("Erro na requisição:", error);
-    }
+        try {
+            const response = await this.httpProvider.get(request.url);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
     }
 
     post() {
