@@ -7,19 +7,24 @@ import { Token } from "src/domain/valueobjects/ai/Token";
 
 export class GeminiAgent implements AIAgentInterface {
     private ai: any;
+    private model: string;
 
-    private constructor() {
+    constructor(model: string = 'gemini-2.5-flash') {
+        this.model = model;
         this.ai = new GoogleGenAI({
             apiKey: process.env.GEMINI_API_KEY
         });
     }
 
     async askToAi(input: AIInput): Promise<AIOutput> {
-        const response = await this.ai.models.generateContent({
-            model: "gemini-2.5-flash",
+        const responseApi = await this.ai.models.generateContent({
+            model: this.model,
             contents: input.getMessage().getValue(),
         });
 
-        return new AIOutput(new Response(response.text), new Token(response.usageMetadata.promptTokenCount));
+        const response = new Response(responseApi.text);
+        const tokens = new Token(responseApi.usageMetadata.promptTokenCount)
+        
+        return new AIOutput(response, tokens);
     }
 }
