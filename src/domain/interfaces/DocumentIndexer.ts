@@ -1,6 +1,6 @@
-import { ContentExtracted } from "../valueobjects/document/ContentExtracted";
+import { DocumentEmbedded } from "../valueobjects/document/DocumentEmbedded";
 import { DocumentIndexed } from "../valueobjects/document/DocumentIndexed";
 
 export interface DocumentIndexer {
-    process(content: ContentExtracted): Promise<DocumentIndexed>;
+    process(documentEmbedded: DocumentEmbedded): Promise<DocumentIndexed>;
 }

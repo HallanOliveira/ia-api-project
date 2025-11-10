@@ -1,31 +1,37 @@
 import { Output } from "../dto/indexing/Output";
 import { DocumentParser } from "src/domain/interfaces/DocumentParser";
-import { DocumentExtractor } from "src/domain/interfaces/DocumentExtractor";
 import { DocumentIndexer } from "src/domain/interfaces/DocumentIndexer";
 import { FilePath } from "src/domain/valueobjects/document/FilePath";
+import { Logger } from "src/domain/interfaces/Logger";
+import { EmbenddingGenerator } from "src/domain/interfaces/EmbendingGenerator";
 
 export class IndexDocsUseCase {
     private documentParserService: DocumentParser;
-    private extractContentService: DocumentExtractor;
+    private embenddingGenerator: EmbenddingGenerator;
     private indexerDocService: DocumentIndexer;
+    private logger: Logger;
 
     constructor(
         documentParserService: DocumentParser,
-        extractContentService: DocumentExtractor,
-        indexerDocService: DocumentIndexer
+        embenddingGenerator: EmbenddingGenerator,
+        indexerDocService: DocumentIndexer,
+        logger: Logger
     ) {
         this.documentParserService = documentParserService;
-        this.extractContentService = extractContentService;
+        this.embenddingGenerator = embenddingGenerator;
         this.indexerDocService = indexerDocService;
+        this.logger = logger;
     }
 
     async execute(): Promise<Output> {
         try {
             const documentParsed = await this.documentParserService.process();
-            const contentExtracted = await this.extractContentService.process(documentParsed);
-            const documentIndexed = await this.indexerDocService.process(contentExtracted);
+            const DocumentEmbedded = await this.embenddingGenerator.process(documentParsed);
+            const documentIndexed = await this.indexerDocService.process(DocumentEmbedded);
             return new Output(documentIndexed.getFilePath(), documentIndexed.getSuccess());
-        } catch {
+        } catch(e: any) {
+            console.log(e.message);
+            this.logger.error(e.message);
             return new Output(new FilePath(''), false);
         }
     }

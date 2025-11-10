@@ -1,11 +1,11 @@
 export class ContentExtracted {
-    private value: string;
+    private value: [object];
 
-    constructor(value: string) {
+    constructor(value: [object]) {
         this.value = value;
     }
 
-    getValue(): string {
+    getValue(): [object] {
         return this.value;
     }
 
